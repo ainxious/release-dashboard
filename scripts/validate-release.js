@@ -8,6 +8,10 @@ const configPath = process.argv[2] ?? "deploy-config.json";
 const rawConfig = await readFile(configPath, "utf8");
 const config = JSON.parse(rawConfig);
 
+/* TODO: Remove debug */
+console.log("*** DEBUG deploy-config.json ***");
+console.log(JSON.stringify(config, null, 2));
+
 const storageEndpoint = config.s3_endpoint;
 const releaseBucket = config.s3_bucket;
 const artifactKey = config.s3_key;
