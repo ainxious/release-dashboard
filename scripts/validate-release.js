@@ -8,22 +8,13 @@ const configPath = process.argv[2] ?? "deploy-config.json";
 const rawConfig = await readFile(configPath, "utf8");
 const config = JSON.parse(rawConfig);
 
-/* TODO: Remove debug */
-console.log("*** DEBUG deploy-config.json ***");
-console.log(JSON.stringify(config, null, 2));
-
-const storageEndpoint = config.s3_endpoint;
-const releaseBucket = config.s3_bucket;
-const artifactKey = config.s3_key;
+const storageEndpoint = config.storage?.s3_endpoint;
+const releaseBucket = config.storage?.s3_bucket;
+const artifactKey = config.storage?.s3_key;
 const releaseVersion = config.release?.version ?? "unknown";
 
-if (!releaseBucket || !artifactKey) {
-  console.error("Deploy config missing required s3 bucket or s3 key fields");
-  process.exit(1);
-}
-
-if (!storageEndpoint) {
-  console.error("Deploy config missing required s3 endpoint field");
+if (!storageEndpoint || !releaseBucket || !artifactKey) {
+  console.error("Deploy config missing required storage.s3_endpoint, storage.s3_bucket, or storage.s3_key fields");
   process.exit(1);
 }
 
