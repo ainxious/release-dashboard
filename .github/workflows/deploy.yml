@@ -1,0 +1,33 @@
+name: release-validation
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  release-validation:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v5
+
+      - name: Setup Node
+        uses: actions/setup-node@v5
+        with:
+          node-version: 22
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Validate app build
+        run: npm run build
+
+      - name: Fetch deploy config
+        env:
+          DEPLOY_CONFIG_URL: ${{ secrets.DEPLOY_CONFIG_URL }}
+        run: node scripts/fetch-deploy-config.js
+
+      - name: Validate release bundle
+        run: node scripts/validate-release.js deploy-config.json
